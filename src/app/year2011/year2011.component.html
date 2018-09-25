@@ -1,0 +1,121 @@
+
+<div id="wrapper">
+
+  <section id="one" class="wrapper style3 spotlights">
+  						<section>
+
+  							<div class="content">
+  								<div class="inner">
+
+
+                    <iframe width="800" height="600" src="https://datastudio.google.com/embed/reporting/1FFiffs5WVXMiiHJAHzyPwBvm5S5GnRIx/page/QnoY" frameborder="0" style="border:0" allowfullscreen></iframe>
+
+
+                	</div>
+  							</div>
+  						</section>
+              <section>
+
+                <div class="content">
+                  <div class="inner">
+                    <h2>Finals Details</h2>
+                    <div class="row">
+
+                      <div class="col-6 col-12-medium">
+
+                          <div *ngFor="let mat of matchService.matches">
+                      <ul *ngIf="(mat.Year==2011)">
+                      <li>
+  											<b>Host:</b> {{mat.Host}}
+                        </li>
+
+                          <li>
+                            Stadium: {{mat.Sta}}
+                            </li>
+                            <li>
+                              City: {{mat.City}}
+                              </li>
+                            <li>
+                              Player of the Series: {{mat.ManofT}}
+                              </li>
+                              <li>
+                                Man of the Match of finals: {{mat.ManofM}}
+                                </li>
+                            </ul>
+                          </div>
+                        </div>
+                          <div class="col-6 col-12-medium">
+                              <div *ngFor="let mat of matchService.matches">
+                          <ul *ngIf="(mat.Year==2015)">
+                          <li>
+      											Team1: {{mat.Team1}}
+                            </li>
+                            <li>
+                              Team2: {{mat.Team2}}
+                              </li>
+                              <li>
+                                Winner: {{mat.Winner}}
+                                </li>
+                                <li>
+                                  Margin: {{mat.Margin}}
+                                  </li>
+                                </ul>
+</div>
+                              </div>
+                            </div>
+
+                  </div>
+                </div>
+              </section>
+  						<section>
+
+  							<div class="content">
+  								<div class="inner">
+                    <h2>Want to give your views on the World Cup 2011?</h2>
+                  <div class=" split style1">
+                      <section>
+                        <form #userForm="ngForm" (ngSubmit)="onSubmit(userForm)">
+                          <input type="hidden" name="_id" #_id="ngModel" [(ngModel)]="userService.selectedUser._id">
+
+                          <div class="fields">
+                            <div class="field half">
+                              <label for="name">Name</label>
+                              <input type="text" name="name"  #name="ngModel" [(ngModel)]="userService.selectedUser.name" placeholder="Enter full name" required/>
+                            </div>
+                            <div class="field half">
+                              <label for="email">Email</label>
+                              <input type="email" name="email"   pattern="^[\w]{1,}[\w.+-]{0,}@[\w-]{2,}([.][a-zA-Z]{2,}|[.][\w-]{2,}[.][a-zA-Z]{2,})$"  #name="ngModel" [(ngModel)]="userService.selectedUser.email" placeholder="abc@gmail.com" required>
+                            </div>
+                            <div class="field">
+                              <label for="message">Description</label>
+                              <input type="text" name="description"  rows="5" #name="ngModel" [(ngModel)]="userService.selectedUser.description" placeholder="Enter description" required>
+                            </div>
+                          </div>
+                          <ul class="actions">
+
+                            <li><button class="button primary" type="submit" [disabled]="!userForm.valid">Submit</button></li>
+                            <li><button class="button" type="button" (click)="resetForm(userForm)">Reset</button></li>
+
+                          </ul>
+                        </form>
+                      </section>
+                      <section>
+      <ul class="alt">
+        <li>
+          <i>See what others have to say!</i>
+        </li>
+        <li *ngFor="let use of userService.users">
+          {{use.name}} : {{use.description}}
+          </li>
+
+
+      </ul>
+    </section>
+
+  </div>
+  								</div>
+  							</div>
+  						</section>
+  					</section>
+
+</div>

@@ -1,0 +1,620 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>MapBox Integration</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js'></script>
+      <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' />
+		<style>
+
+			body {
+				color:#404040;
+				font:400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+				margin:0;
+				padding:0;
+				-webkit-font-smoothing:antialiased;
+			}
+
+			* {
+				-webkit-box-sizing:border-box;
+				-moz-box-sizing:border-box;
+				box-sizing:border-box;
+			}
+
+			.sidebar {
+				position:absolute;
+				width:33.3333%;
+				height:100%;
+				top:77px;left:0;
+				overflow:hidden;
+				border-right:1px solid rgba(0,0,0,0.25);
+				 background-color: _palette(accent1);
+			}
+			.pad2 {
+				padding:20px;
+			}
+
+			.map {
+				position:absolute;
+				left:33.3333%;
+				width:66.6666%;
+				top:77px;bottom:0;
+				height: 100%;
+			}
+
+			h1 {
+				font-size:22px;
+				margin:0;
+				font-weight:400;
+				line-height: 20px;
+				padding: 20px 2px;
+			}
+
+			a {
+				color:#404040;
+				text-decoration:none;
+			}
+
+			a:hover {
+				color:#101010;
+			}
+
+			.heading {
+				background:#fff;
+				border-bottom:1px solid #eee;
+				min-height:60px;
+				line-height:60px;
+				padding:0 10px;
+				background-color: #00853e;
+				color: #fff;
+			}
+
+			.listings {
+				height:100%;
+				background-color: rgb(255, 255, 255);
+				overflow:auto;
+				padding-bottom:60px;
+			}
+
+			.listings .item {
+				display:block;
+				border-bottom:1px solid #eee;
+				padding:10px;
+				text-decoration:none;
+			}
+
+			.listings .item:last-child { border-bottom:none; }
+			.listings .item .title {
+				display:block;
+				color: _palette(accent1);
+				font-weight:700;
+			}
+
+			.listings .item .title small { font-weight:400; }
+			.listings .item.active .title,
+			.listings .item .title:hover { color:#8cc63f; }
+			.listings .item.active {
+				background-color:#f8f8f8;
+			}
+			::-webkit-scrollbar {
+				width:3px;
+				height:3px;
+				border-left:0;
+				background:rgba(0,0,0,0.1);
+			}
+			::-webkit-scrollbar-track {
+				background:none;
+			}
+			::-webkit-scrollbar-thumb {
+				background:#00853e;
+				border-radius:0;
+			}
+
+			.marker {
+				border: none;
+				cursor: pointer;
+				height: 56px;
+				width: 56px;
+				background-image: url(marker.png);
+				background-color: rgba(0, 0, 0, 0);
+			}
+
+			.clearfix { display:block; }
+			.clearfix:after {
+				content:'.';
+				display:block;
+				height:0;
+				clear:both;
+				visibility:hidden;
+			}
+
+			/* Marker tweaks */
+			.mapboxgl-popup {
+				padding-bottom: 50px;
+			}
+
+			.mapboxgl-popup-close-button {
+				display:none;
+			}
+			.mapboxgl-popup-content {
+				font:400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+				padding:0;
+				width:230px;
+			}
+			.mapboxgl-popup-content-wrapper {
+				padding:1%;
+			}
+			.mapboxgl-popup-content h3 {
+				background:#91c949;
+				color:#fff;
+				margin:0;
+				display:block;
+				padding:10px;
+				border-radius:3px 3px 0 0;
+				font-weight:700;
+				margin-top:-15px;
+			}
+
+			.mapboxgl-popup-content h4 {
+				margin:0;
+				display:block;
+				padding: 10px 10px 5px 5px;
+				font-weight:400;
+				color: #808080;
+			}
+
+			.mapboxgl-popup-content div {
+				padding:10px;
+			}
+
+			.mapboxgl-container .leaflet-marker-icon {
+				cursor:pointer;
+			}
+
+			.mapboxgl-popup-anchor-top > .mapboxgl-popup-content {
+				margin-top: 15px;
+			}
+
+			.mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
+				border-bottom-color: #91c949;
+			}
+		</style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<header id="header">
+				<a href="mapbox.html" class="title">Skylark Drones</a>
+				<nav>
+					<ul>
+						<li><a href="index.html">Home</a></li>
+
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Wrapper -->
+
+
+				<!-- Main -->
+				<div class='sidebar'>
+
+    <div id='listings' class='listings'></div>
+    </div>
+    <div id='map' class='map'> </div>
+
+
+
+
+
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script>
+			  // This will let you use the .remove() function later on
+			  if (!('remove' in Element.prototype)) {
+			    Element.prototype.remove = function() {
+			      if (this.parentNode) {
+			          this.parentNode.removeChild(this);
+			      }
+			    };
+			  }
+
+			  mapboxgl.accessToken = 'pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2lqbmpqazdlMDBsdnRva284cWd3bm11byJ9.V6Hg2oYJwMAxeoR9GEzkAA';
+
+			  // This adds the map
+			  var map = new mapboxgl.Map({
+			    // container id specified in the HTML
+			    container: 'map',
+			    // style URL
+			    style: 'mapbox://styles/mapbox/light-v9',
+			    // initial position in [long, lat] format
+			    center: [-77.034084142948, 38.909671288923],
+			    // initial zoom
+			    zoom: 3,
+			    scrollZoom: false
+			  });
+
+			  var stores = {
+			  "features": [
+			    {
+			      "type": "Feature",
+			      "properties": {
+
+			        "Host": "England",
+			        "ManoftheMatchoftheFinal": "Clive Lloyd",
+			        "ManoftheTournament": "Not Applicable",
+			        "Margin": "17 runs",
+			        "Team1": "West Indies",
+			        "Team2": "Australia",
+			        "Winner": "West Indies",
+			        "Year": 1975
+			      },
+			      "geometry": {
+			        "coordinates": [
+			          -0.172239,
+			          51.529653
+			        ],
+			        "type": "Point"
+			      },
+			      "id": "c66294b75e0a0733bc6847e6d8346ef0"
+			    },
+			    {
+			      "type": "Feature",
+			      "properties": {
+
+			        "Host": "England",
+			        "ManoftheMatchoftheFinal": "Viv Richards",
+			        "ManoftheTournament": "Not Applicable",
+			        "Margin": "92 runs",
+			        "Team1": "West Indies",
+			        "Team2": "England",
+			        "Winner": "West Indies",
+			        "Year": 1979
+			      },
+			      "geometry": {
+			        "coordinates": [
+			          -0.173021,
+			          51.529494
+			        ],
+			        "type": "Point"
+			      },
+			      "id": "f9227a9ab70a6ebe91fc8015558952c3"
+			    },
+			    {
+			      "type": "Feature",
+			      "properties": {
+			        "Host": "England",
+			        "ManoftheMatchoftheFinal": "Mohinder Amarnath",
+			        "ManoftheTournament": "Not Applicable",
+			        "Margin": "43 runs",
+			        "Team1": "India",
+			        "Team2": "West Indies",
+			        "Winner": "India",
+			        "Year": 1983
+			      },
+			      "geometry": {
+			        "coordinates": [
+			          -0.17279,
+			          51.529107
+			        ],
+			        "type": "Point"
+			      },
+			      "id": "bfb455f9976ae9743f3eb0e66a913aa3"
+			    },
+			    {
+			      "type": "Feature",
+			      "properties": {
+			        "Host": "India",
+			        "ManoftheMatchoftheFinal": "David Boon",
+			        "ManoftheTournament": "Not Applicable",
+			        "Margin": "7 runs",
+			        "Team1": "Australia",
+			        "Team2": "England",
+			        "Winner": "Australia",
+			        "Year": 1987
+			      },
+			      "geometry": {
+			        "coordinates": [
+			          88.343257,
+			          22.564604
+			        ],
+			        "type": "Point"
+			      },
+			      "id": "c2bf415a2f9ec527efaef31f7651a8d2"
+			    },
+			    {
+			      "type": "Feature",
+			      "properties": {
+			        "Host": "Australia, New Zealand",
+			        "ManoftheMatchoftheFinal": "Wasim Akram",
+			        "ManoftheTournament": "Martin Crowe",
+			        "Margin": "22 runs",
+			        "Team1": "England",
+			        "Team2": "Pakistan",
+			        "Winner": "Pakistan",
+			        "Year": 1992
+			      },
+			      "geometry": {
+			        "coordinates": [
+			          144.983221,
+			          -37.819909
+			        ],
+			        "type": "Point"
+			      },
+			      "id": "8506718832017cd1111c75bcbfff9cee"
+			    },
+
+			      {
+			        "type": "Feature",
+			        "properties": {
+			          "Host": "India, Pakistan, Sri Lanka",
+			          "ManoftheMatchoftheFinal": "Aravinda De Silva",
+			          "ManoftheTournament": "Sanath Jayasuriya",
+			          "Margin": "7 wickets",
+			          "Team1": "Australia",
+			          "Team2": "Sri Lanka",
+			          "Winner": "Sri Lanka",
+			          "Year": 1996
+			        },
+			        "geometry": {
+			          "coordinates": [
+			            74.33349,
+			            31.513353
+			          ],
+			          "type": "Point"
+			        },
+			        "id": "c14ab698426ca7a1049e88debc703aa2"
+			      },
+			      {
+			        "type": "Feature",
+			        "properties": {
+			          "Host": "England",
+			          "ManoftheMatchoftheFinal": "Shane Warne",
+			          "ManoftheTournament": "Lance Klusener",
+			          "Margin": "8 wickets",
+			          "Team1": "Pakistan",
+			          "Team2": "Australia",
+			          "Winner": "Australia",
+			          "Year": 1999
+			        },
+			        "geometry": {
+			          "coordinates": [
+			            -0.173623,
+			            51.52932
+			          ],
+			          "type": "Point"
+			        },
+			        "id": "cbd8679eefa58634885aa2341e0972e9"
+			      },
+			      {
+			        "type": "Feature",
+			        "properties": {
+			          "Host": "South Africa",
+			          "ManoftheMatchoftheFinal": "Ricky Ponting",
+			          "ManoftheTournament": "Sachin Tendulkar",
+			          "Margin": "125 runs",
+			          "Team1": "Australia",
+			          "Team2": "India",
+			          "Winner": "Australia",
+			          "Year": 2003
+			        },
+			        "geometry": {
+			          "coordinates": [
+			            28.055405,
+			            -26.135397
+			          ],
+			          "type": "Point"
+			        },
+			        "id": "fc30cb277eae8fe61590f60f2d60dc3b"
+			      },
+			    {
+			      "type": "Feature",
+			      "properties": {
+			        "Host": "West Indies",
+			        "ManoftheMatchoftheFinal": "Adam Gilchrist",
+			        "ManoftheTournament": "Glen McGrath",
+			        "Margin": "53 runs",
+			        "Team1": "Australia",
+			        "Team2": "Sri Lanka",
+			        "Winner": "Australia",
+			        "Year": 2007
+			      },
+			      "geometry": {
+			        "coordinates": [
+			          -59.62263,
+			          13.105023
+			        ],
+			        "type": "Point"
+			      },
+			      "id": "31d8aacb8b091eb6b386eb2186124861"
+			    },
+			    {
+			      "type": "Feature",
+			      "properties": {
+			        "Host": "India, Pakistan, Sri Lanka, Bangladesh",
+			        "ManoftheMatchoftheFinal": "Mahendra Singh Dhoni",
+			        "ManoftheTournament": "Yuvraj Singh",
+			        "Margin": "6 wickets",
+			        "Team1": "Sri Lanka",
+			        "Team2": "India",
+			        "Winner": "India",
+			        "Year": 2011
+			      },
+			      "geometry": {
+			        "coordinates": [
+			          76.729103,
+			          20.995168
+			        ],
+			        "type": "Point"
+			      },
+			      "id": "3e2a0c977b18f654f3c8079708f62d92"
+			    },
+
+
+			    {
+			      "type": "Feature",
+			      "properties": {
+			        "Host": "Australia, New Zealand",
+			        "ManoftheMatchoftheFinal": "James Faulkner",
+			        "ManoftheTournament": "Mitchell Starc",
+			        "Margin": "7 wickets",
+			        "Team1": "New Zealand",
+			        "Team2": "Australia",
+			        "Winner": "Australia",
+			        "Year": 2015
+			      },
+			      "geometry": {
+			        "coordinates": [
+			          144.983415,
+			          -37.820342
+			        ],
+			        "type": "Point"
+			      },
+			      "id": "9bb3de7ffd14baf6b4baa10a826b6112"
+			    }
+
+			  ],
+			  "type": "FeatureCollection"
+			};
+
+			  // This adds the data to the map
+			  map.on('load', function (e) {
+			    // This is where your '.addLayer()' used to be, instead add only the source without styling a layer
+			    map.addSource("places", {
+			      "type": "geojson",
+			      "data": stores
+			    });
+			    // Initialize the list
+			    buildLocationList(stores);
+
+			  });
+
+			  // This is where your interactions with the symbol layer used to be
+			  // Now you have interactions with DOM markers instead
+			  stores.features.forEach(function(marker, i) {
+			    // Create an img element for the marker
+			    var el = document.createElement('div');
+			    el.id = "marker-" + i;
+			    el.className = 'marker';
+			    // Add markers to the map at all points
+			    new mapboxgl.Marker(el, {offset: [0, -23]})
+			        .setLngLat(marker.geometry.coordinates)
+			        .addTo(map);
+			//map.fitBounds(features.getBounds());
+			    el.addEventListener('click', function(e){
+			        // 1. Fly to the point
+			        flyToStore(marker);
+
+			        // 2. Close all other popups and display popup for clicked store
+			        createPopUp(marker);
+
+			        // 3. Highlight listing in sidebar (and remove highlight for all other listings)
+			        var activeItem = document.getElementsByClassName('active');
+
+			        e.stopPropagation();
+			        if (activeItem[0]) {
+			           activeItem[0].classList.remove('active');
+			        }
+
+			        var listing = document.getElementById('listing-' + i);
+			        listing.classList.add('active');
+
+			    });
+			  });
+
+
+			  function flyToStore(currentFeature) {
+			    map.flyTo({
+			        center: currentFeature.geometry.coordinates,
+			        zoom: 12
+			      });
+			  }
+
+			  function createPopUp(currentFeature) {
+			    var popUps = document.getElementsByClassName('mapboxgl-popup');
+			    if (popUps[0]) popUps[0].remove();
+
+
+			    var popup = new mapboxgl.Popup({closeOnClick: false})
+			          .setLngLat(currentFeature.geometry.coordinates)
+			          .setHTML('<h3>World Cup Finals '+currentFeature.properties.Year+ '<img src="award.png" alt="Trophy" style="float:right;"></h3>' +
+			           '<h4><b>' + currentFeature.properties.Team1 + '</b> Vs <b>' + currentFeature.properties.Team2 + '</b></h4>'+
+			        '<h4><b> Winner: </b>' + currentFeature.properties.Winner + '</h4>'+
+			        '<h4><b> Margin: </b>' + currentFeature.properties.Margin + '</h4>'+
+			      '<h4><b> Man of the Tournament: </b>' + currentFeature.properties.ManoftheTournament + '</h4>'+
+			      '<h4><b> Man of the Match(Final): </b>' + currentFeature.properties.ManoftheMatchoftheFinal + '</h4>'+
+						'<h4><b><a href="index.html">More Details..</a></b><h4>'
+			    )
+			          .addTo(map);
+			  }
+
+
+			  function buildLocationList(data) {
+			    for (i = 0; i < data.features.length; i++) {
+			      var currentFeature = data.features[i];
+			      var prop = currentFeature.properties;
+
+			      var listings = document.getElementById('listings');
+			      var listing = listings.appendChild(document.createElement('div'));
+			      listing.className = 'item';
+			      listing.id = "listing-" + i;
+
+			      var link = listing.appendChild(document.createElement('a'));
+			      link.href = '#';
+			      link.className = 'title';
+			      link.dataPosition = i;
+			      link.innerHTML = prop.Year;
+
+			      var details = listing.appendChild(document.createElement('div'));
+			      details.innerHTML = prop.Host;
+			      //if (prop.phone) {
+			      //  details.innerHTML += ' &middot; ' + prop.phoneFormatted;
+			      //}
+
+
+
+			      link.addEventListener('click', function(e){
+			        // Update the currentFeature to the store associated with the clicked link
+			        var clickedListing = data.features[this.dataPosition];
+
+			        // 1. Fly to the point
+			        flyToStore(clickedListing);
+
+			        // 2. Close all other popups and display popup for clicked store
+			        createPopUp(clickedListing);
+
+			        // 3. Highlight listing in sidebar (and remove highlight for all other listings)
+			        var activeItem = document.getElementsByClassName('active');
+
+			        if (activeItem[0]) {
+			           activeItem[0].classList.remove('active');
+			        }
+			        this.parentNode.classList.add('active');
+
+			      });
+			    }
+			  }
+
+			  //featureLayer.on('ready', function() {
+			      // featureLayer.getBounds() returns the corners of the furthest-out markers,
+			      // and map.fitBounds() makes sure that the map contains these.
+			//      map.fitBounds(featureLayer.getBounds());
+			//  });
+			    </script>
+	</body>
+</html>

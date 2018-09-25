@@ -2,9 +2,7 @@
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
-  production: false
-};
+
 
 /*
  * In development mode, for easier debugging, you can ignore zone related error
@@ -13,3 +11,9 @@ export const environment = {
  * because it will have a performance impact when errors are thrown
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+export const environment = {
+  production: false,
+
+  accessToken:'pk.eyJ1IjoidGFuaXNoYS0yNCIsImEiOiJjam0yOWluNTkwMGhnM2txcjhuOGM3dHhiIn0.3Nf2YwQfz_4_7xTM4Kqlqw'
+
+}
